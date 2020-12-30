@@ -24,7 +24,8 @@
     }
   ],
   "permissions": [
-    "tabs"
+    "tabs",
+    "notifications"
   ],
   "commands": {
     "toggle-cam": {
@@ -39,6 +40,13 @@
         "default": "Ctrl+Shift+2"
       },
       "description": "Toggle microphone",
+      "global": true
+    },
+    "focus-tab": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+0"
+      },
+      "description": "Bring browser to front and select tab",
       "global": true
     }
   }
