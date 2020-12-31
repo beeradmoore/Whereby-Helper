@@ -10,8 +10,11 @@ chrome.commands.onCommand.addListener(function(command) {
     // Now lets find all whereby tabs.
     chrome.tabs.query({ "url": "https://*.whereby.com/*" }, function(tabs) {
         //console.log("Found " + tabs.length + " tabs");
-
-        if (tabs.length == 1)
+        if (tabs.length == 0)
+        {
+            chrome.notifications.create(null, { iconUrl: "Icon_48.png", message: "No WhereBy tabs detected. Doing nothing 🤷‍♂️", title: "Whereby Helper", type: "basic" });
+        }
+        else if (tabs.length == 1)
         {
             var tab = tabs[0];
 
