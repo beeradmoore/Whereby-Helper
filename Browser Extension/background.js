@@ -7,16 +7,34 @@ chrome.commands.onCommand.addListener(function(command) {
         return;
     }
 
-    // Now lets find all whereby tabs.
-    chrome.tabs.query({ "url": "https://*.whereby.com/*" }, function(tabs) {
+    // Unable to use filter in the query. If I request tabs permission I must access url of the tab.
+    // If I only use url in the query I require tabs permission for this to work but I am then in 
+    // vilation of Chrome Webstore policies and the extension will be rejected.
+    //
+    // The workaround as directed by support is to not filter on the url, but instead query EVERY tab
+    // and then manually access the url of each one to see if it is a tab on the domain I am after.
+    chrome.tabs.query({}, function(tabs) {
         //console.log("Found " + tabs.length + " tabs");
-        if (tabs.length == 0)
+        var wherebyTabs = [];
+
+        for (var i = 0; i < tabs.length; ++i)
+        {
+            // Check for <anything.>whereby.com/<anything else>
+            if (/whereby\.com\/(.*)$/.test(tabs[i].url))
+            {
+                wherebyTabs.push(tabs[i]);
+            }
+        }
+        //console.log("Found " + wherebyTabs.length + " wherebyTabs");
+        
+
+        if (wherebyTabs.length == 0)
         {
             chrome.notifications.create(null, { iconUrl: "Icon_48.png", message: "No WhereBy tabs detected. Doing nothing 🤷‍♂️", title: "Whereby Helper", type: "basic" });
         }
-        else if (tabs.length == 1)
+        else if (wherebyTabs.length == 1)
         {
-            var tab = tabs[0];
+            var tab = wherebyTabs[0];
 
             if (command == "focus-tab")
             {
@@ -25,40 +43,37 @@ chrome.commands.onCommand.addListener(function(command) {
             }
             else
             {
-                //for (var i = 0; i < tabs.length; i++)
-                //{
-                    // And lets send the action to it.
-                    //console.log(tabs[i].id + " - " + tabs[i].url);
-                    chrome.tabs.sendMessage(tab.id, { action: command }, (response) => {
-                        // Did it do the thing?
+                // And lets send the action to it.
+                //console.log(tabs[i].id + " - " + tabs[i].url);
+                chrome.tabs.sendMessage(tab.id, { action: command }, (response) => {
+                    // Did it do the thing?
 
-                        // Something bad happened, no notification for you.
-                        if (response == undefined)
-                        {
-                            return;
-                        }
+                    // Something bad happened, no notification for you.
+                    if (response == undefined)
+                    {
+                        return;
+                    }
 
-                        var message = "";
-                        if (command == "toggle-cam")
-                        {
-                            message = "Camera is now ";
-                        }
-                        else if (command == "toggle-mic")
-                        {
-                            message = "Microphone is now ";
-                        }
+                    var message = "";
+                    if (command == "toggle-cam")
+                    {
+                        message = "Camera is now ";
+                    }
+                    else if (command == "toggle-mic")
+                    {
+                        message = "Microphone is now ";
+                    }
 
-                        if (response.new_state === true)
-                        {
-                            message += "on.";
-                        }
-                        else if (response.new_state === false)
-                        {
-                            message += "off.";
-                        }
-                        chrome.notifications.create(null, { iconUrl: "Icon_48.png", message: message, title: "Whereby Helper", type: "basic" });
-                    });
-                //}
+                    if (response.new_state === true)
+                    {
+                        message += "on.";
+                    }
+                    else if (response.new_state === false)
+                    {
+                        message += "off.";
+                    }
+                    chrome.notifications.create(null, { iconUrl: "Icon_48.png", message: message, title: "Whereby Helper", type: "basic" });
+                });
             }
         }
         else
