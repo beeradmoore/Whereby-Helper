@@ -72,7 +72,7 @@ chrome.commands.onCommand.addListener(function(command) {
                     {
                         message += "off.";
                     }
-                    chrome.notifications.create(null, { iconUrl: "Icon_48.png", message: message, title: "Whereby Helper", type: "basic" });
+                    chrome.notifications.create(null, { iconUrl: "Icon_48.png", message: message, title: "Whereby Helper", type: "basic", silent: true });
                 });
             }
         }
