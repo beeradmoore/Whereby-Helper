@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Whereby Helper",
-  "version": "1.1",
+  "version": "1.1.1",
   "icons": {
     "16": "Icon_16.png",
     "48": "Icon_48.png",
@@ -25,7 +25,8 @@
   ],
   "permissions": [
     "tabs",
-    "notifications"
+    "notifications",
+    "storage"
   ],
   "commands": {
     "toggle-cam": {
@@ -49,5 +50,9 @@
       "description": "Bring browser to front and select tab",
       "global": true
     }
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
   }
 }

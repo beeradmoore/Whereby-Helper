@@ -1,3 +1,15 @@
+function ShowNotification(title, message, silent)
+{
+    chrome.storage.sync.get({
+        notifications_enabled: true
+    }, function (items) {
+        if (items.notifications_enabled)
+        {
+            chrome.notifications.create(null, { iconUrl: "Icon_48.png", message: message, title: title, type: "basic", silent: silent });
+        }
+    });
+}
+
 chrome.commands.onCommand.addListener(function(command) {
     //console.log('Command:', command);
     
@@ -30,7 +42,7 @@ chrome.commands.onCommand.addListener(function(command) {
 
         if (wherebyTabs.length == 0)
         {
-            chrome.notifications.create(null, { iconUrl: "Icon_48.png", message: "No WhereBy tabs detected. Doing nothing 🤷‍♂️", title: "Whereby Helper", type: "basic" });
+            ShowNotification("Whereby Helper", "No WhereBy tabs detected. Doing nothing 🤷‍♂️", false);
         }
         else if (wherebyTabs.length == 1)
         {
@@ -72,13 +84,14 @@ chrome.commands.onCommand.addListener(function(command) {
                     {
                         message += "off.";
                     }
-                    chrome.notifications.create(null, { iconUrl: "Icon_48.png", message: message, title: "Whereby Helper", type: "basic", silent: true });
+
+                    ShowNotification("Whereby Helper", message, true);
                 });
             }
         }
         else
         {
-            chrome.notifications.create(null, { iconUrl: "Icon_48.png", message: "Multiple WhereBy tabs detected. Doing nothing 🤷‍♂️", title: "Whereby Helper", type: "basic" });
+            ShowNotification("Whereby Helper", "Multiple WhereBy tabs detected. Doing nothing 🤷‍♂️", false);
         }
     });
 });
