@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Whereby Helper",
   "version": "1.1.1",
   "icons": {
@@ -8,9 +8,7 @@
     "128": "Icon_128.png"
   },
   "background": {
-    "scripts": [
-      "background.js"
-    ]
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
